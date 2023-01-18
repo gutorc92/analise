@@ -1,4 +1,6 @@
 import click
+import os
+import subprocess
 from importers.funds_importers import import_funds
 from producer.producer import producer_transactions
 from analysis.basic_analysis import month_analysis
@@ -11,7 +13,8 @@ def cli(debug):
 @cli.command()  # @cli, not @click!
 def sync():
     click.echo('Syncing')
-    import_funds()
+    directory = os.path.dirname(os.path.abspath(__file__))
+    import_funds(directory)
 
 @cli.command()
 def producer():
@@ -25,5 +28,15 @@ def analysis(month, year):
     print(month, year)
     click.echo('analysis')
     month_analysis(month, year)
+
+@cli.command()
+def remove_db():
+    subprocess.Popen('rm transaction.db', shell=True)
+
+@cli.command()
+def create_db():
+    subprocess.Popen('sqlite3 transaction.db "VACUUM;"', shell=True)
+    print('created')
+
 if __name__ == '__main__':
     cli()

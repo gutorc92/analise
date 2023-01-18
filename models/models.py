@@ -7,7 +7,7 @@ class Asset(Model):
     ticket = CharField(unique=True)
     name = CharField()
     real_name = CharField()
-    market = CharField(null=True, choices=(('stock', 'Ações'), ('fi', 'Fundos imobiliários')))
+    market = CharField(null=True, choices=(('stock', 'Ações'), ('fi', 'Fundos imobiliários'), ('fii-agro', 'Fundos imobiliários agro')))
 
     class Meta:
         database = db

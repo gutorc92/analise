@@ -33,11 +33,6 @@ def month_analysis(month, year):
       fii.append(asset)
   income.drop(drops, inplace=True)
   income.drop(columns=['Produto', 'Pagamento', 'Tipo de Evento', 'Instituição'], inplace=True)
-  # query = Transaction.select(
-  #   Transaction.asset,
-  #   fn.SUM(Transaction.total).alias('total'),
-  #   fn.SUM(Transaction.quantity).alias('quantity')
-  # ).group_by(Transaction.asset).where(Transaction.asset.in_(fii),Transaction.status == 'hold')
   query = Asset.select(
     Asset.ticket.alias('ticket'),
     fn.SUM(Transaction.total).alias('total'),
@@ -45,14 +40,7 @@ def month_analysis(month, year):
   ).join(Transaction).group_by(Asset.ticket).where(Transaction.asset.in_(fii),Transaction.status == 'hold').dicts()
   cost = pd.DataFrame.from_dict(query)
 
-  
-  # for sample in query:
-    # print(f"asset: {sample['ticket']}, total: {sample['total']}")
-    # print(f'quantity: {sample.quantity}, mean: {sample.total/sample.quantity}')
-  print(income.columns)
   income = income.groupby('ticket')['Quantidade', 'Valor líquido'].sum()
-  print(income.head())
-  # income.set_index('ticket', inplace=True)
   
   cost.set_index('ticket', inplace=True)
   result = pd.concat([income, cost], axis=1, join="inner" )
