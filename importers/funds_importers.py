@@ -1,20 +1,18 @@
-import os
 import pandas as pd
 from models.models import Asset
 from utils.file_processor import DataDirProcesor
+from peewee import IntegrityError
 
 
-def import_funds(directory):
-  data_processor = DataDirProcesor('fi', directory)
-  total = data_processor.execute()
-  for _, row in total.iterrows():
-    data = row.to_dict()
-    # print(index, row.to_json())
-    Asset.create(**data)
-  data_processor = DataDirProcesor('fii-agro', directory)
-  total = data_processor.execute()
-  for _, row in total.iterrows():
-    data = row.to_dict()
-    # print(index, row.to_json())
-    Asset.create(**data)
+def import_funds(directory, asset_types):
+  for type_fund in asset_types:
+    data_processor = DataDirProcesor(type_fund, directory)
+    total = data_processor.execute()
+    for _, row in total.iterrows():
+      data = row.to_dict()
+      # print(index, row.to_json())
+      try:
+        Asset.create(**data)
+      except IntegrityError as e:
+        pass
 

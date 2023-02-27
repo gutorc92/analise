@@ -1,20 +1,28 @@
 import click
 import os
+import logging
 import subprocess
 from importers.funds_importers import import_funds
 from producer.producer import producer_transactions
 from analysis.basic_analysis import month_analysis
-
+from models import ASSET_TYPES
 @click.group()
 @click.option('--debug/--no-debug', default=False)
 def cli(debug):
     click.echo(f"Debug mode is {'on' if debug else 'off'}")
+    if debug:
+        logger = logging.getLogger('peewee')
+        logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.DEBUG)
 
 @cli.command()  # @cli, not @click!
-def sync():
+@click.option('--types', type=click.Choice(ASSET_TYPES, case_sensitive=False),  multiple=True, default=ASSET_TYPES)
+def sync(types):
     click.echo('Syncing')
+    print('types', types)
     directory = os.path.dirname(os.path.abspath(__file__))
-    import_funds(directory)
+    import_funds(directory, types)
+    
 
 @cli.command()
 def producer():

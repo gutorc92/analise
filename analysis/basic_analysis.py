@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 from peewee import fn
 import logging
 
-logger = logging.getLogger('peewee')
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+# logger = logging.getLogger('peewee')
+# logger.addHandler(logging.StreamHandler())
+# logger.setLevel(logging.DEBUG)
 
 def month_analysis(month, year, directory):
   file_processor = FileIncomeProcessor(month, year, directory)
