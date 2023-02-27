@@ -5,7 +5,7 @@ from utils.file_processor import DataDirProcesor
 
 
 def import_funds(directory):
-  data_processor = DataDirProcesor('fii', directory)
+  data_processor = DataDirProcesor('fi', directory)
   total = data_processor.execute()
   for _, row in total.iterrows():
     data = row.to_dict()

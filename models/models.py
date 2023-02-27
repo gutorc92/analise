@@ -1,7 +1,14 @@
 from peewee import *
 from abc import ABC, abstractmethod
+import logging
 
-db = SqliteDatabase('transaction.db')
+# logger = logging.getLogger('peewee')
+# logger.addHandler(logging.StreamHandler())
+# logger.setLevel(logging.DEBUG)
+
+db = PostgresqlDatabase('dailyplanet', user='dailyplanet', password='dailyplanet', host='localhost', port=5432)
+
+# db = SqliteDatabase('transaction.db')
 
 class Asset(Model):
     ticket = CharField(unique=True)
@@ -51,6 +58,7 @@ class BuyFiAsset(BuyAsset):
         Transaction.date_buy == self.date_buy
       ).limit(self.quantity)
       if len(transactions) == self.quantity:
+        print('len equal')
         return True
       for _ in range(0, self.quantity):
         transaction = Transaction(
@@ -63,4 +71,4 @@ class BuyFiAsset(BuyAsset):
           )
         transaction.save()
 
-db.create_tables([Asset, Transaction])
+# db.create_tables([Asset, Transaction])

@@ -5,13 +5,29 @@ import re
 def list_files_directory(directory, subdirectory = 'transactions'):
   files_dir = os.listdir(os.path.join(directory, subdirectory))
   return [FileProcessor(os.path.join(directory, subdirectory, file_name)) for file_name in files_dir]
-       
+
+class FileIncomeProcessor:
+
+  def __init__(self, month: int, year: int, directory: str) -> None:
+    self.month = month
+    self.year = year
+    self.directory = directory
+
+  def find_file(self) -> str: 
+    files_dir = list_files_directory(self.directory, subdirectory = 'income')
+    file_name_analysis = None
+    for files_name in files_dir:
+      match = re.search(rf'([a-z-A-z_]+){self.year}_{self.month:02d}_01_a_{self.year}_{self.month:02d}_(30|31|28)', files_name.abs_file_name)
+      if match:
+        file_name_analysis = files_name.abs_file_name
+    return file_name_analysis
+
 class DataDirProcesor:
   def __init__(self, file_type: str, directory: str) -> None:
     self.file_type = file_type
     self.directory = directory
     self.files = {
-      'fii': 'fundos_listados_imobiliarios.csv',
+      'fi': 'fundos_listados_imobiliarios.csv',
       'fii-agro': 'fundos_listados_agro.csv' 
     }
   

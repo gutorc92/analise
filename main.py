@@ -19,7 +19,8 @@ def sync():
 @cli.command()
 def producer():
     click.echo('producing')
-    producer_transactions()
+    directory = os.path.dirname(os.path.abspath(__file__))
+    producer_transactions(directory)
 
 @cli.command()
 @click.option('--month', type=click.IntRange(1, 12))
@@ -27,7 +28,8 @@ def producer():
 def analysis(month, year):
     print(month, year)
     click.echo('analysis')
-    month_analysis(month, year)
+    directory = os.path.dirname(os.path.abspath(__file__))
+    month_analysis(month, year, directory)
 
 @cli.command()
 def remove_db():
