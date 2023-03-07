@@ -2,7 +2,7 @@ import click
 import os
 import logging
 import subprocess
-from importers.funds_importers import import_funds
+from importers.funds_importers import import_funds, import_stocks
 from producer.producer import producer_transactions
 from analysis.basic_analysis import month_analysis
 from models import ASSET_TYPES
@@ -19,13 +19,19 @@ def cli(debug):
 @click.option('--types', type=click.Choice(ASSET_TYPES, case_sensitive=False),  multiple=True, default=ASSET_TYPES)
 def sync(types):
     click.echo('Syncing')
-    print('types', types)
     directory = os.path.dirname(os.path.abspath(__file__))
     import_funds(directory, types)
+    import_stocks(directory)
     
 
 @cli.command()
 def producer():
+    click.echo('producing')
+    directory = os.path.dirname(os.path.abspath(__file__))
+    producer_transactions(directory)
+
+@cli.command()
+def consumer():
     click.echo('producing')
     directory = os.path.dirname(os.path.abspath(__file__))
     producer_transactions(directory)
