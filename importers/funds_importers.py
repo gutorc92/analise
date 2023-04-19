@@ -1,11 +1,21 @@
 import os
 import codecs
-from models.models import Asset
+import pandas as pd
+from models.models import Asset, Ticket
 from utils.file_processor import DataDirProcesor
 from peewee import IntegrityError
 from bs4 import BeautifulSoup
 
 def import_funds(directory, asset_types):
+  file_name = os.path.join(directory, 'data', 'tickets.csv')
+  tickets = pd.read_csv(
+    file_name,
+    delimiter=';',
+    index_col=False,
+    encoding="cp1252"
+  )
+  tickets.drop(tickets.columns.difference(['TckrSymb', 'Asst']), 1, inplace=True)
+  print(tickets.columns)
   for type_fund in asset_types:
     data_processor = DataDirProcesor(type_fund, directory)
     total = data_processor.execute()
@@ -13,7 +23,15 @@ def import_funds(directory, asset_types):
       data = row.to_dict()
       # print(index, row.to_json())
       try:
-        Asset.create(**data)
+        asset, created = Asset.get_or_create(**data)
+        print('asset', asset.id, 'created', created)
+        asset_ticket = tickets[tickets['Asst'] == asset.base_ticket]
+        asset_ticket.drop(asset_ticket.columns.difference(['TckrSymb']), 1, inplace=True)
+        asset_ticket = asset_ticket.rename(columns={'TckrSymb': 'ticket'})
+        asset_ticket['asset_id'] = asset.id
+        asset_ticket['market'] = 'frac'
+        
+        Ticket.insert_many(asset_ticket.to_dict('records')).execute()
       except IntegrityError as e:
         pass
 

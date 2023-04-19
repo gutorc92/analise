@@ -4,8 +4,11 @@ import logging
 import subprocess
 from importers.funds_importers import import_funds, import_stocks
 from producer.producer import producer_transactions
+from consumers.price_consumer import consume_messages
+from consumers.cotation_consumer import consume_cotation
 from analysis.basic_analysis import month_analysis
 from models import ASSET_TYPES
+
 @click.group()
 @click.option('--debug/--no-debug', default=False)
 def cli(debug):
@@ -21,7 +24,7 @@ def sync(types):
     click.echo('Syncing')
     directory = os.path.dirname(os.path.abspath(__file__))
     import_funds(directory, types)
-    import_stocks(directory)
+    # import_stocks(directory)
     
 
 @cli.command()
@@ -32,9 +35,9 @@ def producer():
 
 @cli.command()
 def consumer():
-    click.echo('producing')
-    directory = os.path.dirname(os.path.abspath(__file__))
-    producer_transactions(directory)
+    click.echo('consuming')
+    # consume_messages()
+    consume_cotation()
 
 @cli.command()
 @click.option('--month', type=click.IntRange(1, 12))

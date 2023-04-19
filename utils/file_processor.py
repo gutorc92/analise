@@ -38,11 +38,11 @@ class DataDirProcesor:
       delimiter=';',
       index_col=False,
       header=0,
-      names = ["real_name","name","segment", 'ticket'],
-      encoding='latin-1'
+      names = ["real_name","name","segment", 'base_ticket'],
+      encoding="cp1252"
     )
     df.drop(['segment'], axis=1, inplace=True)
-    df['market'] = self.file_type
+    df['segment'] = self.file_type
     return df
 class FileProcessor:
 
