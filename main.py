@@ -5,7 +5,7 @@ import subprocess
 from importers.funds_importers import import_funds, import_stocks
 from producer.producer import producer_transactions
 from consumers.price_consumer import consume_messages
-from consumers.cotation_consumer import consume_cotation
+from importers.cotation_importer import consume_cotation
 from analysis.basic_analysis import month_analysis
 from models import ASSET_TYPES
 

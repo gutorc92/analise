@@ -16,6 +16,8 @@ psycopg2-binary = "*"
 python-dotenv = "*"
 bs4 = "*"
 yfinance = "*"
+pybind11 = "*"
+riskfolio-lib = "*"
 
 [requires]
 python_version = "3.8"
