@@ -17,13 +17,27 @@ def consume_cotation():
               interval = "1d",       # trading interval
               ignore_tz = True,      # ignore timezone when aligning data from different exchanges?
               prepost = False)
+  for ticket in tickets_query:
+    ticket_id = [asset for asset in tickets if asset.ticket == ticket[0:-3]][0]
+    print(ticket_id)
+    data2 = data.loc[:,(['Adj Close', 'Open', 'Volume', 'Close', 'High'], ticket)]
+    data2.columns = ['adj_close','open', 'volume', 'close', 'high']
+    print('data2', data2.head())
+    data2 = data2.dropna()
+    print('data2', data2.head())
+    for index, row in data2.iterrows():
+      converted = row.to_dict()
+      try:
+        converted['date'] = index
+        converted['ticket_id'] = ticket_id.id
+        print(converted)
+        Cotation.get_or_create(**converted)
+      except Exception as e:
+        print(e)
+
   # print(data.columns)
   # df = data[data['Open'] < 10]
   # print(df.index)
-  # for _, row in data.iterrows():
-  #   converted = row.to_dict()
-  #   print(converted)
-  
   return data, tickets_name
 
 def portifolio(data, assets):
